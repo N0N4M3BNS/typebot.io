@@ -67,7 +67,7 @@ test.describe.parallel('Settings page', () => {
       const favIconImg = page.locator('img >> nth=0')
       await expect(favIconImg).toHaveAttribute(
         'src',
-        'http://localhost:3001/favicon.png'
+        'http://localhost:3001/waapy-favicon.png'
       )
       await favIconImg.click()
       await expect(page.locator('text=Giphy')).toBeHidden()
