@@ -101,11 +101,11 @@ export const MembersList = () => {
 
   return (
     <Stack w="full" spacing={3}>
-      {!canInviteNewMember && (
+      {/* {!canInviteNewMember && (
         <UnlockPlanAlertInfo>
           {t('workspace.membersList.unlockBanner.label')}
         </UnlockPlanAlertInfo>
-      )}
+      )} */}
       {isDefined(seatsLimit) && (
         <Heading fontSize="2xl">
           {t('workspace.membersList.title')}{' '}
