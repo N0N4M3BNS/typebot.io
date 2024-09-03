@@ -14,24 +14,27 @@ import { AppearanceRadioGroup } from './AppearanceRadioGroup'
 import { useUser } from '../hooks/useUser'
 // import { ChevronDownIcon } from '@/components/icons'
 // import { MoreInfoTooltip } from '@/components/MoreInfoTooltip'
-import { useTranslate, useTolgee } from '@tolgee/react'
-import { useRouter } from 'next/router'
+import {
+  useTranslate,
+  // useTolgee
+} from '@tolgee/react'
+// import { useRouter } from 'next/router'
 import { GraphNavigationRadioGroup } from './GraphNavigationRadioGroup'
 
-const localeHumanReadable = {
-  en: 'English',
-  fr: 'Français',
-  de: 'Deutsch',
-  pt: 'Português',
-  'pt-BR': 'Português (BR)',
-  ro: 'Română',
-  es: 'Español',
-  it: 'Italiano',
-} as const
+// const localeHumanReadable = {
+//   en: 'English',
+//   fr: 'Français',
+//   de: 'Deutsch',
+//   pt: 'Português',
+//   'pt-BR': 'Português (BR)',
+//   ro: 'Română',
+//   es: 'Español',
+//   it: 'Italiano',
+// } as const
 
 export const UserPreferencesForm = () => {
-  const { getLanguage } = useTolgee()
-  const router = useRouter()
+  // const { getLanguage } = useTolgee()
+  // const router = useRouter()
   const { t } = useTranslate()
   const { user, updateUser } = useUser()
 
