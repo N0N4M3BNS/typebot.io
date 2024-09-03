@@ -107,6 +107,14 @@ export const BlocksSideBar = () => {
     })
     .map((block) => block.id)
 
+  const allowedIntegrations = [
+    IntegrationBlockType.WEBHOOK,
+    IntegrationBlockType.EMAIL,
+    IntegrationBlockType.GOOGLE_SHEETS,
+  ]
+
+  const allowedForgedBlocks = ['openai', 'anthropic', 'nocodb']
+
   return (
     <Flex
       w="360px"
@@ -226,19 +234,22 @@ export const BlocksSideBar = () => {
             {t('editor.sidebarBlocks.blockType.integrations.heading')}
           </Text>
           <SimpleGrid columns={2} spacing="3">
-            {Object.values(IntegrationBlockType)
-              .filter((type) =>
-                type.toLowerCase().includes(searchInput.toLowerCase())
-              )
-              .concat(filteredForgedBlockIds as any)
-              .filter((type) => !legacyIntegrationBlocks.includes(type))
-              .map((type) => (
-                <BlockCard
-                  key={type}
-                  type={type}
-                  onMouseDown={handleMouseDown}
-                />
-              ))}
+            {[
+              ...Object.values(IntegrationBlockType)
+                .filter((type) =>
+                  type.toLowerCase().includes(searchInput.toLowerCase())
+                )
+                .filter(
+                  (type) =>
+                    !legacyIntegrationBlocks.includes(type) &&
+                    allowedIntegrations.includes(type)
+                ),
+              ...filteredForgedBlockIds.filter((type) =>
+                allowedForgedBlocks.includes(type)
+              ),
+            ].map((type) => (
+              <BlockCard key={type} type={type} onMouseDown={handleMouseDown} />
+            ))}
           </SimpleGrid>
         </Stack>
 
