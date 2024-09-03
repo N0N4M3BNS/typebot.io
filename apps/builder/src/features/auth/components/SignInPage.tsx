@@ -1,7 +1,7 @@
 import { Seo } from '@/components/Seo'
-import { TextLink } from '@/components/TextLink'
-import { T, useTranslate } from '@tolgee/react'
-import { VStack, Heading, Text } from '@chakra-ui/react'
+// import { TextLink } from '@/components/TextLink'
+import { useTranslate } from '@tolgee/react'
+import { VStack, Heading } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import { SignInForm } from './SignInForm'
 

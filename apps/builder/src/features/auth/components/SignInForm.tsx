@@ -20,8 +20,8 @@ import {
   signIn,
   useSession,
 } from 'next-auth/react'
-import { DividerWithText } from './DividerWithText'
-import { SocialLoginButtons } from './SocialLoginButtons'
+// import { DividerWithText } from './DividerWithText'
+// import { SocialLoginButtons } from './SocialLoginButtons'
 import { useRouter } from 'next/router'
 import { BuiltInProviderType } from 'next-auth/providers'
 import { useToast } from '@/hooks/useToast'

@@ -5,7 +5,7 @@ import {
   SkeletonText,
   Stack,
 } from '@chakra-ui/react'
-import { UnlockPlanAlertInfo } from '@/components/UnlockPlanAlertInfo'
+// import { UnlockPlanAlertInfo } from '@/components/UnlockPlanAlertInfo'
 import { WorkspaceInvitation, WorkspaceRole } from '@typebot.io/prisma'
 import React from 'react'
 import { AddMemberForm } from './AddMemberForm'
