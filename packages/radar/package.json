@@ -1,15 +1,18 @@
 {
   "name": "@typebot.io/radar",
-  "type": "module",
+  "version": "1.0.0",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "license": "AGPL-3.0-or-later",
   "private": true,
-  "exports": {
-    ".": "./src/index.ts",
-    "./*": "./src/*.ts"
-  },
   "dependencies": {
-    "@typebot.io/env": "workspace:*"
+    "@udecode/plate-common": "30.4.5"
   },
   "devDependencies": {
-    "@typebot.io/tsconfig": "workspace:*"
+    "@typebot.io/schemas": "workspace:*",
+    "@typebot.io/prisma": "workspace:*",
+    "@typebot.io/tsconfig": "workspace:*",
+    "@typebot.io/env": "workspace:*",
+    "typescript": "5.4.5"
   }
 }

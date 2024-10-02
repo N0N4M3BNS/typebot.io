@@ -1,12 +1,12 @@
-import { defineConfig } from "tsup";
+import { defineConfig } from 'tsup'
 
 export default defineConfig((options) => ({
-  entry: ["src/index.ts"],
+  entry: ['src/index.ts'],
   sourcemap: true,
   minify: !options.watch,
-  format: "esm",
+  format: ['esm', 'cjs'],
   loader: {
-    ".css": "text",
+    '.css': 'text',
   },
-  dts: true,
-}));
+  external: ['@paralleldrive/cuid2'],
+}))

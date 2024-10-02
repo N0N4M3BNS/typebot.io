@@ -1,15 +1,12 @@
-import { sendRequest } from "@typebot.io/lib/utils";
-import type { Prisma } from "@typebot.io/prisma/types";
-import type { Member } from "../types";
+import { WorkspaceInvitation } from '@typebot.io/prisma'
+import { sendRequest } from '@typebot.io/lib'
+import { Member } from '../types'
 
 export const sendInvitationQuery = (
-  invitation: Omit<
-    Prisma.WorkspaceInvitation,
-    "id" | "createdAt" | "updatedAt"
-  >,
+  invitation: Omit<WorkspaceInvitation, 'id' | 'createdAt' | 'updatedAt'>
 ) =>
-  sendRequest<{ invitation?: Prisma.WorkspaceInvitation; member?: Member }>({
+  sendRequest<{ invitation?: WorkspaceInvitation; member?: Member }>({
     url: `/api/workspaces/${invitation.workspaceId}/invitations`,
-    method: "POST",
+    method: 'POST',
     body: invitation,
-  });
+  })

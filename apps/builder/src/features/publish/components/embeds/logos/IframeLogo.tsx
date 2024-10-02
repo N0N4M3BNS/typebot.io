@@ -1,4 +1,4 @@
-import { Icon, type IconProps } from "@chakra-ui/react";
+import { Icon, IconProps } from '@chakra-ui/react'
 
 export const IframeLogo = (props: IconProps) => {
   return (
@@ -46,5 +46,5 @@ export const IframeLogo = (props: IconProps) => {
         />
       </g>
     </Icon>
-  );
-};
+  )
+}

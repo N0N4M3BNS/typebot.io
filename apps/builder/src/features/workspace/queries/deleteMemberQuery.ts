@@ -1,7 +1,7 @@
-import { sendRequest } from "@typebot.io/lib/utils";
+import { sendRequest } from '@typebot.io/lib'
 
 export const deleteMemberQuery = (workspaceId: string, userId: string) =>
   sendRequest({
-    method: "DELETE",
+    method: 'DELETE',
     url: `/api/workspaces/${workspaceId}/members/${userId}`,
-  });
+  })

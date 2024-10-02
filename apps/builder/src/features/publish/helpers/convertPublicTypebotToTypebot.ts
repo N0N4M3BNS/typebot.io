@@ -1,11 +1,10 @@
-import type { PublicTypebot } from "@typebot.io/typebot/schemas/publicTypebot";
-import type { TypebotV6 } from "@typebot.io/typebot/schemas/typebot";
+import { PublicTypebot, TypebotV6 } from '@typebot.io/schemas'
 
 export const convertPublicTypebotToTypebot = (
   typebot: PublicTypebot,
-  existingTypebot: TypebotV6,
+  existingTypebot: TypebotV6
 ): TypebotV6 => {
-  if (typebot.version !== "6") return existingTypebot;
+  if (typebot.version !== '6') return existingTypebot
   return {
     id: typebot.typebotId,
     version: typebot.version,
@@ -29,5 +28,5 @@ export const convertPublicTypebotToTypebot = (
     whatsAppCredentialsId: existingTypebot.whatsAppCredentialsId,
     riskLevel: existingTypebot.riskLevel,
     events: typebot.events,
-  };
-};
+  }
+}

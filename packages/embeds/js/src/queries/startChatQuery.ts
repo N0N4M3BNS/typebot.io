@@ -1,31 +1,31 @@
+import { BotContext } from '@/types'
+import { guessApiHost } from '@/utils/guessApiHost'
+import { isNotDefined, isNotEmpty } from '@typebot.io/lib'
 import {
   getPaymentInProgressInStorage,
   removePaymentInProgressFromStorage,
-} from "@/features/blocks/inputs/payment/helpers/paymentInProgressStorage";
-import type { BotContext } from "@/types";
-import { CorsError } from "@/utils/CorsError";
-import { guessApiHost } from "@/utils/guessApiHost";
-import type {
+} from '@/features/blocks/inputs/payment/helpers/paymentInProgressStorage'
+import {
   ContinueChatResponse,
   StartChatInput,
   StartChatResponse,
   StartFrom,
   StartPreviewChatInput,
-} from "@typebot.io/bot-engine/schemas/api";
-import { isNotDefined, isNotEmpty } from "@typebot.io/lib/utils";
-import ky from "ky";
+} from '@typebot.io/schemas'
+import ky from 'ky'
+import { CorsError } from '@/utils/CorsError'
 
 type Props = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  typebot: string | any;
-  stripeRedirectStatus?: string;
-  apiHost?: string;
-  startFrom?: StartFrom;
-  isPreview: boolean;
-  prefilledVariables?: Record<string, unknown>;
-  resultId?: string;
-  sessionId?: string;
-};
+  typebot: string | any
+  stripeRedirectStatus?: string
+  apiHost?: string
+  startFrom?: StartFrom
+  isPreview: boolean
+  prefilledVariables?: Record<string, unknown>
+  resultId?: string
+  sessionId?: string
+}
 
 export async function startChatQuery({
   typebot,
@@ -38,18 +38,17 @@ export async function startChatQuery({
   sessionId,
 }: Props) {
   if (isNotDefined(typebot))
-    throw new Error("Typebot ID is required to get initial messages");
+    throw new Error('Typebot ID is required to get initial messages')
 
-  const paymentInProgressStateStr =
-    getPaymentInProgressInStorage() ?? undefined;
+  const paymentInProgressStateStr = getPaymentInProgressInStorage() ?? undefined
   const paymentInProgressState = paymentInProgressStateStr
     ? (JSON.parse(paymentInProgressStateStr) as {
-        sessionId: string;
-        typebot: BotContext["typebot"];
+        sessionId: string
+        typebot: BotContext['typebot']
       })
-    : undefined;
+    : undefined
   if (paymentInProgressState) {
-    removePaymentInProgressFromStorage();
+    removePaymentInProgressFromStorage()
 
     try {
       const data = await ky
@@ -60,27 +59,27 @@ export async function startChatQuery({
           {
             json: {
               message: paymentInProgressState
-                ? stripeRedirectStatus === "failed"
-                  ? "fail"
-                  : "Success"
+                ? stripeRedirectStatus === 'failed'
+                  ? 'fail'
+                  : 'Success'
                 : undefined,
             },
             timeout: false,
-          },
+          }
         )
-        .json<ContinueChatResponse>();
+        .json<ContinueChatResponse>()
 
       return {
         data: {
           ...data,
           ...paymentInProgressState,
         } satisfies StartChatResponse,
-      };
+      }
     } catch (error) {
-      return { error };
+      return { error }
     }
   }
-  const typebotId = typeof typebot === "string" ? typebot : typebot.id;
+  const typebotId = typeof typebot === 'string' ? typebot : typebot.id
   if (isPreview) {
     try {
       const data = await ky
@@ -97,16 +96,16 @@ export async function startChatQuery({
               sessionId,
             } satisfies Omit<
               StartPreviewChatInput,
-              "typebotId" | "isOnlyRegistering" | "textBubbleContentFormat"
+              'typebotId' | 'isOnlyRegistering' | 'textBubbleContentFormat'
             >,
             timeout: false,
-          },
+          }
         )
-        .json<StartChatResponse>();
+        .json<StartChatResponse>()
 
-      return { data };
+      return { data }
     } catch (error) {
-      return { error };
+      return { error }
     }
   }
 
@@ -114,14 +113,14 @@ export async function startChatQuery({
     const iframeReferrerOrigin =
       parent !== window && isNotEmpty(document.referrer)
         ? new URL(document.referrer).origin
-        : undefined;
+        : undefined
     const response = await ky.post(
       `${
         isNotEmpty(apiHost) ? apiHost : guessApiHost()
       }/api/v1/typebots/${typebotId}/startChat`,
       {
         headers: {
-          "x-typebot-iframe-referrer-origin": iframeReferrerOrigin,
+          'x-typebot-iframe-referrer-origin': iframeReferrerOrigin,
         },
         json: {
           isStreamEnabled: true,
@@ -130,24 +129,24 @@ export async function startChatQuery({
           isOnlyRegistering: false,
         } satisfies Omit<
           StartChatInput,
-          "publicId" | "textBubbleContentFormat"
+          'publicId' | 'textBubbleContentFormat'
         >,
         timeout: false,
-      },
-    );
+      }
+    )
 
-    const corsAllowOrigin = response.headers.get("access-control-allow-origin");
+    const corsAllowOrigin = response.headers.get('access-control-allow-origin')
 
     if (
       iframeReferrerOrigin &&
       corsAllowOrigin &&
-      corsAllowOrigin !== "*" &&
+      corsAllowOrigin !== '*' &&
       !iframeReferrerOrigin.includes(corsAllowOrigin)
     )
-      throw new CorsError(corsAllowOrigin);
+      throw new CorsError(corsAllowOrigin)
 
-    return { data: await response.json<StartChatResponse>() };
+    return { data: await response.json<StartChatResponse>() }
   } catch (error) {
-    return { error };
+    return { error }
   }
 }

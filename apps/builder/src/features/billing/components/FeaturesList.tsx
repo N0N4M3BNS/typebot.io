@@ -1,13 +1,13 @@
-import { CheckIcon } from "@/components/icons";
 import {
-  Flex,
-  ListIcon,
-  ListItem,
-  type ListProps,
+  ListProps,
   UnorderedList,
-} from "@chakra-ui/react";
+  Flex,
+  ListItem,
+  ListIcon,
+} from '@chakra-ui/react'
+import { CheckIcon } from '@/components/icons'
 
-type FeaturesListProps = { features: (string | JSX.Element)[] } & ListProps;
+type FeaturesListProps = { features: (string | JSX.Element)[] } & ListProps
 
 export const FeaturesList = ({ features, ...props }: FeaturesListProps) => (
   <UnorderedList listStyleType="none" spacing={2} {...props}>
@@ -18,4 +18,4 @@ export const FeaturesList = ({ features, ...props }: FeaturesListProps) => (
       </Flex>
     ))}
   </UnorderedList>
-);
+)

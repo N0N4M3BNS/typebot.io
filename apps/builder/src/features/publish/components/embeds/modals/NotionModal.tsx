@@ -1,25 +1,25 @@
-import { AlertInfo } from "@/components/AlertInfo";
-import { CopyButton } from "@/components/CopyButton";
+import { AlertInfo } from '@/components/AlertInfo'
+import { CopyButton } from '@/components/CopyButton'
 import {
-  Code,
-  Heading,
-  Input,
-  InputGroup,
-  InputRightElement,
-  ListItem,
   Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
   ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  Heading,
+  ModalCloseButton,
+  ModalBody,
   OrderedList,
-  Stack,
+  ListItem,
+  Code,
+  InputGroup,
+  Input,
+  InputRightElement,
+  ModalFooter,
   Text,
-} from "@chakra-ui/react";
-import { env } from "@typebot.io/env";
-import type { ModalProps } from "../EmbedButton";
+  Stack,
+} from '@chakra-ui/react'
+import { ModalProps } from '../EmbedButton'
+import { env } from '@typebot.io/env'
 
 export const NotionModal = ({
   isPublished,
@@ -48,7 +48,7 @@ export const NotionModal = ({
                 <Text>Paste your typebot URL</Text>
                 <InputGroup size="sm">
                   <Input
-                    type={"text"}
+                    type={'text'}
                     defaultValue={`${env.NEXT_PUBLIC_VIEWER_URL[0]}/${publicId}`}
                   />
                   <InputRightElement width="60px">
@@ -65,5 +65,5 @@ export const NotionModal = ({
         <ModalFooter />
       </ModalContent>
     </Modal>
-  );
-};
+  )
+}

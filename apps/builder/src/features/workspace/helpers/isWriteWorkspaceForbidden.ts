@@ -1,13 +1,13 @@
-import type { Prisma } from "@typebot.io/prisma/types";
+import { MemberInWorkspace, User } from '@typebot.io/prisma'
 
 export const isWriteWorkspaceForbidden = (
   workspace: {
-    members: Pick<Prisma.MemberInWorkspace, "userId" | "role">[];
+    members: Pick<MemberInWorkspace, 'userId' | 'role'>[]
   },
-  user: Pick<Prisma.User, "id">,
+  user: Pick<User, 'id'>
 ) => {
   const userRole = workspace.members.find(
-    (member) => member.userId === user.id,
-  )?.role;
-  return !userRole || userRole === "GUEST";
-};
+    (member) => member.userId === user.id
+  )?.role
+  return !userRole || userRole === 'GUEST'
+}

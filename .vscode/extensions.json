@@ -1,8 +1,10 @@
 {
   "recommendations": [
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
     "bradlc.vscode-tailwindcss",
     "unifiedjs.vscode-mdx",
-    "Prisma.prisma",
-    "biomejs.biome"
+    "lokalise.i18n-ally",
+    "Prisma.prisma"
   ]
 }

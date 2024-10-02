@@ -1,27 +1,24 @@
+import React, { ComponentProps } from 'react'
 import {
   Mjml,
   MjmlBody,
-  MjmlColumn,
   MjmlSection,
+  MjmlColumn,
   MjmlSpacer,
-} from "@faire/mjml-react";
-import { render } from "@faire/mjml-react/utils/render";
-import { env } from "@typebot.io/env";
-import type { SendMailOptions } from "nodemailer";
-import type { ComponentProps } from "react";
-import { Button } from "../components/Button";
-import { Head } from "../components/Head";
-import { HeroImage } from "../components/HeroImage";
-import { Text } from "../components/Text";
-import { sendEmail } from "../sendEmail";
+} from '@faire/mjml-react'
+import { render } from '@faire/mjml-react/utils/render'
+import { HeroImage, Text, Button, Head } from '../components'
+import { SendMailOptions } from 'nodemailer'
+import { sendEmail } from '../sendEmail'
+import { env } from '@typebot.io/env'
 
 type GuestInvitationEmailProps = {
-  workspaceName: string;
-  typebotName: string;
-  url: string;
-  hostEmail: string;
-  guestEmail: string;
-};
+  workspaceName: string
+  typebotName: string
+  url: string
+  hostEmail: string
+  guestEmail: string
+}
 
 export const GuestInvitationEmail = ({
   workspaceName,
@@ -59,14 +56,14 @@ export const GuestInvitationEmail = ({
       </MjmlSection>
     </MjmlBody>
   </Mjml>
-);
+)
 
 export const sendGuestInvitationEmail = ({
   to,
   ...props
-}: Pick<SendMailOptions, "to"> & ComponentProps<typeof GuestInvitationEmail>) =>
+}: Pick<SendMailOptions, 'to'> & ComponentProps<typeof GuestInvitationEmail>) =>
   sendEmail({
     to,
     subject: "You've been invited to collaborate 🤝",
     html: render(<GuestInvitationEmail {...props} />).html,
-  });
+  })

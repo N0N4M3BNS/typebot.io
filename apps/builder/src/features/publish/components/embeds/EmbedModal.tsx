@@ -1,32 +1,30 @@
-import { AlertInfo } from "@/components/AlertInfo";
-import { ChevronLeftIcon } from "@/components/icons";
+import { AlertInfo } from '@/components/AlertInfo'
+import { ChevronLeftIcon } from '@/components/icons'
 import {
-  HStack,
-  Heading,
-  IconButton,
   Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
   ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  HStack,
+  IconButton,
+  Heading,
+  ModalCloseButton,
+  ModalBody,
   Stack,
-} from "@chakra-ui/react";
-import { capitalize } from "@typebot.io/lib/utils";
-import { EmbedTypeMenu } from "./EmbedTypeMenu/EmbedTypeMenu";
+  ModalFooter,
+} from '@chakra-ui/react'
+import { capitalize } from '@typebot.io/lib'
+import { EmbedTypeMenu } from './EmbedTypeMenu/EmbedTypeMenu'
 
 type Props = {
-  selectedEmbedType: "standard" | "popup" | "bubble" | undefined;
-  titlePrefix: string;
-  isOpen: boolean;
-  isPublished: boolean;
-  children: React.ReactNode;
-  onClose: () => void;
-  onSelectEmbedType: (
-    type: "standard" | "popup" | "bubble" | undefined,
-  ) => void;
-};
+  selectedEmbedType: 'standard' | 'popup' | 'bubble' | undefined
+  titlePrefix: string
+  isOpen: boolean
+  isPublished: boolean
+  children: React.ReactNode
+  onClose: () => void
+  onSelectEmbedType: (type: 'standard' | 'popup' | 'bubble' | undefined) => void
+}
 
 export const EmbedModal = ({
   selectedEmbedType,
@@ -40,7 +38,7 @@ export const EmbedModal = ({
   <Modal
     isOpen={isOpen}
     onClose={onClose}
-    size={!selectedEmbedType ? "2xl" : "xl"}
+    size={!selectedEmbedType ? '2xl' : 'xl'}
   >
     <ModalOverlay />
     <ModalContent>
@@ -57,7 +55,7 @@ export const EmbedModal = ({
             />
           )}
           <Heading size="md">
-            {titlePrefix}{" "}
+            {titlePrefix}{' '}
             {selectedEmbedType && `- ${capitalize(selectedEmbedType)}`}
           </Heading>
         </HStack>
@@ -76,4 +74,4 @@ export const EmbedModal = ({
       <ModalFooter />
     </ModalContent>
   </Modal>
-);
+)

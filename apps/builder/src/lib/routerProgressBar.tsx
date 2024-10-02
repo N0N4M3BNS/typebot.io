@@ -1,23 +1,22 @@
-import Router from "next/router";
-import NProgress from "nprogress";
-import { useEffect } from "react";
-
-const progressStarted = () => NProgress.start();
-const progressComplete = () => NProgress.done();
+import Router from 'next/router'
+import NProgress from 'nprogress'
+import { useEffect } from 'react'
 
 export const useRouterProgressBar = () =>
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      NProgress.configure({ showSpinner: false });
+    if (typeof window !== 'undefined') {
+      NProgress.configure({ showSpinner: false })
 
-      Router.events.on("routeChangeStart", progressStarted);
-      Router.events.on("routeChangeComplete", progressComplete);
-      Router.events.on("routeChangeError", progressComplete);
+      Router.events.on('routeChangeStart', () => {
+        NProgress.start()
+      })
+
+      Router.events.on('routeChangeComplete', () => {
+        NProgress.done()
+      })
+
+      Router.events.on('routeChangeError', () => {
+        NProgress.done()
+      })
     }
-
-    return () => {
-      Router.events.off("routeChangeStart", progressStarted);
-      Router.events.off("routeChangeComplete", progressComplete);
-      Router.events.off("routeChangeError", progressComplete);
-    };
-  }, []);
+  }, [])

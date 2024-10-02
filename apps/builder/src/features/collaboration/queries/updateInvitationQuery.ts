@@ -1,13 +1,13 @@
-import { sendRequest } from "@typebot.io/lib/utils";
-import type { Prisma } from "@typebot.io/prisma/types";
+import { Invitation } from '@typebot.io/prisma'
+import { sendRequest } from '@typebot.io/lib'
 
 export const updateInvitationQuery = (
   typebotId: string,
   email: string,
-  invitation: Omit<Prisma.Invitation, "createdAt" | "id" | "updatedAt">,
+  invitation: Omit<Invitation, 'createdAt' | 'id' | 'updatedAt'>
 ) =>
   sendRequest({
-    method: "PATCH",
+    method: 'PATCH',
     url: `/api/typebots/${typebotId}/invitations/${email}`,
     body: invitation,
-  });
+  })

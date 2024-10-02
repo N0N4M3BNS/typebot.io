@@ -1,9 +1,9 @@
-import type { Prisma } from "@typebot.io/prisma/types";
+import { PrismaClient, WorkspaceInvitation } from '@typebot.io/prisma'
 
 export const joinWorkspaces = async (
-  p: Prisma.PrismaClient,
+  p: PrismaClient,
   { id, email }: { id: string; email: string },
-  invitations: Prisma.WorkspaceInvitation[],
+  invitations: WorkspaceInvitation[]
 ) => {
   await p.$transaction([
     p.memberInWorkspace.createMany({
@@ -19,5 +19,5 @@ export const joinWorkspaces = async (
         email,
       },
     }),
-  ]);
-};
+  ])
+}

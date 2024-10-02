@@ -1,149 +1,111 @@
-import { LockedIcon, UnlockedIcon } from "@/components/icons";
-import { useBlockDnd } from "@/features/graph/providers/GraphDndProvider";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
-  Fade,
+  Stack,
+  Text,
+  SimpleGrid,
+  useEventListener,
+  Portal,
   Flex,
   IconButton,
   Input,
-  Portal,
-  SimpleGrid,
-  Stack,
-  Text,
   Tooltip,
+  Fade,
   useColorModeValue,
-  useEventListener,
-} from "@chakra-ui/react";
-import { useTranslate } from "@tolgee/react";
-import { BubbleBlockType } from "@typebot.io/blocks-bubbles/constants";
-import type { BlockV6 } from "@typebot.io/blocks-core/schemas/schema";
-import { InputBlockType } from "@typebot.io/blocks-inputs/constants";
-import { IntegrationBlockType } from "@typebot.io/blocks-integrations/constants";
-import { LogicBlockType } from "@typebot.io/blocks-logic/constants";
-import { forgedBlocks } from "@typebot.io/forge-repository/definitions";
-import type React from "react";
-import { useState } from "react";
-import { useDebouncedCallback } from "use-debounce";
-import { headerHeight } from "../constants";
-import { BlockCard } from "./BlockCard";
-import { BlockCardOverlay } from "./BlockCardOverlay";
-import {
-  getBubbleBlockLabel,
-  getInputBlockLabel,
-  getIntegrationBlockLabel,
-  getLogicBlockLabel,
-} from "./BlockLabel";
+} from '@chakra-ui/react'
+import { useBlockDnd } from '@/features/graph/providers/GraphDndProvider'
+import React, { useState } from 'react'
+import { BlockCard } from './BlockCard'
+import { LockedIcon, UnlockedIcon } from '@/components/icons'
+import { BlockCardOverlay } from './BlockCardOverlay'
+import { headerHeight } from '../constants'
+import { useTranslate } from '@tolgee/react'
+import { BubbleBlockType } from '@typebot.io/schemas/features/blocks/bubbles/constants'
+import { InputBlockType } from '@typebot.io/schemas/features/blocks/inputs/constants'
+import { IntegrationBlockType } from '@typebot.io/schemas/features/blocks/integrations/constants'
+import { LogicBlockType } from '@typebot.io/schemas/features/blocks/logic/constants'
+import { BlockV6 } from '@typebot.io/schemas'
+import { useDebouncedCallback } from 'use-debounce'
+import { forgedBlocks } from '@typebot.io/forge-repository/definitions'
 
 // Integration blocks migrated to forged blocks
-const legacyIntegrationBlocks = [IntegrationBlockType.OPEN_AI];
+const legacyIntegrationBlocks = [IntegrationBlockType.OPEN_AI]
 
 export const BlocksSideBar = () => {
-  const { t } = useTranslate();
-  const { setDraggedBlockType, draggedBlockType } = useBlockDnd();
+  const { t } = useTranslate()
+  const { setDraggedBlockType, draggedBlockType } = useBlockDnd()
   const [position, setPosition] = useState({
     x: 0,
     y: 0,
-  });
-  const [relativeCoordinates, setRelativeCoordinates] = useState({
-    x: 0,
-    y: 0,
-  });
-  const [isLocked, setIsLocked] = useState(true);
-  const [isExtended, setIsExtended] = useState(true);
-  const [searchInput, setSearchInput] = useState("");
+  })
+  const [relativeCoordinates, setRelativeCoordinates] = useState({ x: 0, y: 0 })
+  const [isLocked, setIsLocked] = useState(true)
+  const [isExtended, setIsExtended] = useState(true)
+  const [searchInput, setSearchInput] = useState('')
 
-  const closeSideBar = useDebouncedCallback(() => setIsExtended(false), 200);
+  const closeSideBar = useDebouncedCallback(() => setIsExtended(false), 200)
 
   const handleMouseMove = (event: MouseEvent) => {
-    if (!draggedBlockType) return;
-    const { clientX, clientY } = event;
+    if (!draggedBlockType) return
+    const { clientX, clientY } = event
     setPosition({
       ...position,
       x: clientX - relativeCoordinates.x,
       y: clientY - relativeCoordinates.y,
-    });
-  };
-  useEventListener("mousemove", handleMouseMove);
+    })
+  }
+  useEventListener('mousemove', handleMouseMove)
 
-  const handleMouseDown = (e: React.MouseEvent, type: BlockV6["type"]) => {
-    const element = e.currentTarget as HTMLDivElement;
-    const rect = element.getBoundingClientRect();
-    setPosition({ x: rect.left, y: rect.top });
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    setRelativeCoordinates({ x, y });
-    setDraggedBlockType(type);
-  };
+  const handleMouseDown = (e: React.MouseEvent, type: BlockV6['type']) => {
+    const element = e.currentTarget as HTMLDivElement
+    const rect = element.getBoundingClientRect()
+    setPosition({ x: rect.left, y: rect.top })
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    setRelativeCoordinates({ x, y })
+    setDraggedBlockType(type)
+  }
 
   const handleMouseUp = () => {
-    if (!draggedBlockType) return;
-    setDraggedBlockType(undefined);
+    if (!draggedBlockType) return
+    setDraggedBlockType(undefined)
     setPosition({
       x: 0,
       y: 0,
-    });
-  };
-  useEventListener("mouseup", handleMouseUp);
+    })
+  }
+  useEventListener('mouseup', handleMouseUp)
 
-  const handleLockClick = () => setIsLocked(!isLocked);
+  const handleLockClick = () => setIsLocked(!isLocked)
 
   const handleDockBarEnter = () => {
-    closeSideBar.flush();
-    setIsExtended(true);
-  };
+    closeSideBar.flush()
+    setIsExtended(true)
+  }
 
   const handleMouseLeave = () => {
-    if (isLocked) return;
-    closeSideBar();
-  };
+    if (isLocked) return
+    closeSideBar()
+  }
 
   const handleSearchInputChange = (event: {
-    target: { value: React.SetStateAction<string> };
+    target: { value: React.SetStateAction<string> }
   }) => {
-    setSearchInput(event.target.value);
-  };
+    setSearchInput(event.target.value)
+  }
+  const blocksArray = Object.values(forgedBlocks)
 
-  const filteredForgedBlockIds = Object.values(forgedBlocks)
+  const filteredForgedBlockIds = blocksArray
     .filter((block) => {
       return (
         block.id.toLowerCase().includes(searchInput.toLowerCase()) ||
         (block.tags &&
           block.tags.some((tag: string) =>
-            tag.toLowerCase().includes(searchInput.toLowerCase()),
+            tag.toLowerCase().includes(searchInput.toLowerCase())
           )) ||
         block.name.toLowerCase().includes(searchInput.toLowerCase())
-      );
+      )
     })
-    .map((block) => block.id);
-
-  const filteredBubbleBlockTypes = Object.values(BubbleBlockType).filter(
-    (type) =>
-      getBubbleBlockLabel(t)
-        [type].toLowerCase()
-        .includes(searchInput.toLowerCase()),
-  );
-
-  const filteredInputBlockTypes = Object.values(InputBlockType).filter((type) =>
-    getInputBlockLabel(t)
-      [type].toLowerCase()
-      .includes(searchInput.toLowerCase()),
-  );
-
-  const filteredLogicBlockTypes = Object.values(LogicBlockType).filter((type) =>
-    getLogicBlockLabel(t)
-      [type].toLowerCase()
-      .includes(searchInput.toLowerCase()),
-  );
-
-  const filteredIntegrationBlockTypes = Object.values(
-    IntegrationBlockType,
-  ).filter(
-    (type) =>
-      getIntegrationBlockLabel(t)
-        [type].toLowerCase()
-        .includes(searchInput.toLowerCase()) &&
-      !legacyIntegrationBlocks.includes(type),
-  );
+    .map((block) => block.id)
 
   const allowedIntegrations = [
     IntegrationBlockType.WEBHOOK,
@@ -163,7 +125,7 @@ export const BlocksSideBar = () => {
       pl="4"
       py="4"
       onMouseLeave={handleMouseLeave}
-      transform={isExtended ? "translateX(0)" : "translateX(-350px)"}
+      transform={isExtended ? 'translateX(0)' : 'translateX(-350px)'}
       transition="transform 350ms cubic-bezier(0.075, 0.82, 0.165, 1) 0s"
     >
       <Stack
@@ -174,7 +136,7 @@ export const BlocksSideBar = () => {
         pt="4"
         pb="10"
         px="4"
-        bgColor={useColorModeValue("white", "gray.900")}
+        bgColor={useColorModeValue('white', 'gray.900')}
         spacing={6}
         userSelect="none"
         overflowY="auto"
@@ -193,16 +155,16 @@ export const BlocksSideBar = () => {
           <Tooltip
             label={
               isLocked
-                ? t("editor.sidebarBlocks.sidebar.unlock.label")
-                : t("editor.sidebarBlocks.sidebar.lock.label")
+                ? t('editor.sidebarBlocks.sidebar.unlock.label')
+                : t('editor.sidebarBlocks.sidebar.lock.label')
             }
           >
             <IconButton
               icon={isLocked ? <LockedIcon /> : <UnlockedIcon />}
               aria-label={
                 isLocked
-                  ? t("editor.sidebarBlocks.sidebar.icon.unlock.label")
-                  : t("editor.sidebarBlocks.sidebar.icon.lock.label")
+                  ? t('editor.sidebarBlocks.sidebar.icon.unlock.label')
+                  : t('editor.sidebarBlocks.sidebar.icon.lock.label')
               }
               size="sm"
               onClick={handleLockClick}
@@ -212,40 +174,64 @@ export const BlocksSideBar = () => {
 
         <Stack>
           <Text fontSize="sm" fontWeight="semibold">
-            {t("editor.sidebarBlocks.blockType.bubbles.heading")}
+            {t('editor.sidebarBlocks.blockType.bubbles.heading')}
           </Text>
           <SimpleGrid columns={2} spacing="3">
-            {filteredBubbleBlockTypes.map((type) => (
-              <BlockCard key={type} type={type} onMouseDown={handleMouseDown} />
-            ))}
+            {Object.values(BubbleBlockType)
+              .filter((type) =>
+                type.toLowerCase().includes(searchInput.toLowerCase())
+              )
+              .map((type) => (
+                <BlockCard
+                  key={type}
+                  type={type}
+                  onMouseDown={handleMouseDown}
+                />
+              ))}
           </SimpleGrid>
         </Stack>
 
         <Stack>
           <Text fontSize="sm" fontWeight="semibold">
-            {t("editor.sidebarBlocks.blockType.inputs.heading")}
+            {t('editor.sidebarBlocks.blockType.inputs.heading')}
           </Text>
           <SimpleGrid columns={2} spacing="3">
-            {filteredInputBlockTypes.map((type) => (
-              <BlockCard key={type} type={type} onMouseDown={handleMouseDown} />
-            ))}
+            {Object.values(InputBlockType)
+              .filter((type) =>
+                type.toLowerCase().includes(searchInput.toLowerCase())
+              )
+              .map((type) => (
+                <BlockCard
+                  key={type}
+                  type={type}
+                  onMouseDown={handleMouseDown}
+                />
+              ))}
           </SimpleGrid>
         </Stack>
 
         <Stack>
           <Text fontSize="sm" fontWeight="semibold">
-            {t("editor.sidebarBlocks.blockType.logic.heading")}
+            {t('editor.sidebarBlocks.blockType.logic.heading')}
           </Text>
           <SimpleGrid columns={2} spacing="3">
-            {filteredLogicBlockTypes.map((type) => (
-              <BlockCard key={type} type={type} onMouseDown={handleMouseDown} />
-            ))}
+            {Object.values(LogicBlockType)
+              .filter((type) =>
+                type.toLowerCase().includes(searchInput.toLowerCase())
+              )
+              .map((type) => (
+                <BlockCard
+                  key={type}
+                  type={type}
+                  onMouseDown={handleMouseDown}
+                />
+              ))}
           </SimpleGrid>
         </Stack>
 
         <Stack>
           <Text fontSize="sm" fontWeight="semibold">
-            {t("editor.sidebarBlocks.blockType.integrations.heading")}
+            {t('editor.sidebarBlocks.blockType.integrations.heading')}
           </Text>
           <SimpleGrid columns={2} spacing="3">
             {[
@@ -299,5 +285,5 @@ export const BlocksSideBar = () => {
         </Flex>
       </Fade>
     </Flex>
-  );
-};
+  )
+}

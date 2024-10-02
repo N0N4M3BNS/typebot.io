@@ -1,29 +1,29 @@
-import { NumberInput } from "@/components/inputs";
+import { NumberInput } from '@/components/inputs'
 import {
-  HStack,
-  Heading,
+  StackProps,
   Stack,
-  type StackProps,
+  Heading,
   Switch,
+  HStack,
   Text,
-} from "@chakra-ui/react";
-import type { PopupProps } from "@typebot.io/js";
-import { isDefined } from "@typebot.io/lib/utils";
-import { useEffect, useState } from "react";
+} from '@chakra-ui/react'
+import { PopupProps } from '@typebot.io/nextjs'
+import { useState, useEffect } from 'react'
+import { isDefined } from '@typebot.io/lib'
 
 type Props = {
-  onUpdateSettings: (windowSettings: Pick<PopupProps, "autoShowDelay">) => void;
-} & StackProps;
+  onUpdateSettings: (windowSettings: Pick<PopupProps, 'autoShowDelay'>) => void
+} & StackProps
 
 export const PopupSettings = ({ onUpdateSettings, ...props }: Props) => {
-  const [isEnabled, setIsEnabled] = useState(false);
-  const [inputValue, setInputValue] = useState(5);
+  const [isEnabled, setIsEnabled] = useState(false)
+  const [inputValue, setInputValue] = useState(5)
 
   useEffect(() => {
     onUpdateSettings({
       autoShowDelay: isEnabled ? inputValue * 1000 : undefined,
-    });
-  }, [inputValue, isEnabled, onUpdateSettings]);
+    })
+  }, [inputValue, isEnabled, onUpdateSettings])
 
   return (
     <Stack {...props} spacing={4}>
@@ -50,5 +50,5 @@ export const PopupSettings = ({ onUpdateSettings, ...props }: Props) => {
         )}
       </HStack>
     </Stack>
-  );
-};
+  )
+}

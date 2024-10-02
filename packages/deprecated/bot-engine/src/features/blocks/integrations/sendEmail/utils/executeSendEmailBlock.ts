@@ -1,9 +1,8 @@
-import { parseVariables } from "@/features/variables";
-import type { IntegrationState } from "@/types";
-import { parseLog } from "@/utils/helpers";
-import type { SendEmailBlock } from "@typebot.io/blocks-integrations/sendEmail/schema";
-
-import { byId, sendRequest } from "@typebot.io/lib/utils";
+import { parseVariables } from '@/features/variables'
+import { IntegrationState } from '@/types'
+import { parseLog } from '@/utils/helpers'
+import { SendEmailBlock } from '@typebot.io/schemas'
+import { sendRequest, byId } from '@typebot.io/lib'
 
 export const executeSendEmailBlock = (
   block: SendEmailBlock,
@@ -15,25 +14,25 @@ export const executeSendEmailBlock = (
     resultId,
     typebotId,
     resultValues,
-  }: IntegrationState,
+  }: IntegrationState
 ) => {
   if (isPreview) {
     onNewLog({
-      status: "info",
-      description: "Emails are not sent in preview mode",
+      status: 'info',
+      description: 'Emails are not sent in preview mode',
       details: null,
-    });
-    return block.outgoingEdgeId;
+    })
+    return block.outgoingEdgeId
   }
-  const { options } = block;
+  const { options } = block
   sendRequest({
     url: `${apiHost}/api/typebots/${typebotId}/integrations/email?resultId=${resultId}`,
-    method: "POST",
+    method: 'POST',
     body: {
       credentialsId: options?.credentialsId,
       recipients: options?.recipients?.map(parseVariables(variables)),
-      subject: parseVariables(variables)(options?.subject ?? ""),
-      body: parseVariables(variables)(options?.body ?? ""),
+      subject: parseVariables(variables)(options?.subject ?? ''),
+      body: parseVariables(variables)(options?.body ?? ''),
       cc: (options?.cc ?? []).map(parseVariables(variables)),
       bcc: (options?.bcc ?? []).map(parseVariables(variables)),
       replyTo: options?.replyTo
@@ -46,9 +45,9 @@ export const executeSendEmailBlock = (
     },
   }).then(({ error }) => {
     onNewLog(
-      parseLog(error, "Succesfully sent an email", "Failed to send an email"),
-    );
-  });
+      parseLog(error, 'Succesfully sent an email', 'Failed to send an email')
+    )
+  })
 
-  return block.outgoingEdgeId;
-};
+  return block.outgoingEdgeId
+}

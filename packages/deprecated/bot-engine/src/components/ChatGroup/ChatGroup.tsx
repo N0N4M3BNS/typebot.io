@@ -1,12 +1,8 @@
-import { parseVariables } from "@/features/variables";
-import { useAnswers } from "@/providers/AnswersProvider";
-import { useChat } from "@/providers/ChatProvider";
-import type { InputSubmitContent } from "@/types";
-import { getLastChatBlockType } from "@/utils/chat";
-import { executeIntegration } from "@/utils/executeIntegration";
-import { executeLogic } from "@/utils/executeLogic";
-import { blockCanBeRetried, parseRetryBlock } from "@/utils/inputs";
-import type { BubbleBlock } from "@typebot.io/blocks-bubbles/schema";
+import { useEffect, useRef, useState } from 'react'
+import { TransitionGroup, CSSTransition } from 'react-transition-group'
+import { AvatarSideContainer } from './AvatarSideContainer'
+import { LinkedTypebot, useTypebot } from '../../providers/TypebotProvider'
+import { isDefined, byId } from '@typebot.io/lib'
 import {
   isBubbleBlock,
   isBubbleBlockType,
@@ -14,39 +10,42 @@ import {
   isInputBlock,
   isIntegrationBlock,
   isLogicBlock,
-} from "@typebot.io/blocks-core/helpers";
-import type { Block } from "@typebot.io/blocks-core/schemas/schema";
-import type { InputBlock } from "@typebot.io/blocks-inputs/schema";
-import { LogicBlockType } from "@typebot.io/blocks-logic/constants";
-import { getBlockById } from "@typebot.io/groups/helpers";
-import { byId, isDefined } from "@typebot.io/lib/utils";
-import type { PublicTypebot } from "@typebot.io/typebot/schemas/publicTypebot";
-import { useEffect, useRef, useState } from "react";
-import { CSSTransition, TransitionGroup } from "react-transition-group";
+} from '@typebot.io/schemas/helpers'
 import {
-  type LinkedTypebot,
-  useTypebot,
-} from "../../providers/TypebotProvider";
-import { PopupBlockedToast } from "../PopupBlockedToast";
-import { AvatarSideContainer } from "./AvatarSideContainer";
-import { InputChatBlock } from "./ChatBlock/InputChatBlock";
-import { HostBubble } from "./ChatBlock/bubbles/HostBubble";
+  BubbleBlock,
+  InputBlock,
+  PublicTypebot,
+  Block,
+} from '@typebot.io/schemas'
+import { HostBubble } from './ChatBlock/bubbles/HostBubble'
+import { InputChatBlock } from './ChatBlock/InputChatBlock'
+import { parseVariables } from '@/features/variables'
+import { useAnswers } from '@/providers/AnswersProvider'
+import { useChat } from '@/providers/ChatProvider'
+import { InputSubmitContent } from '@/types'
+import { getLastChatBlockType } from '@/utils/chat'
+import { executeIntegration } from '@/utils/executeIntegration'
+import { executeLogic } from '@/utils/executeLogic'
+import { blockCanBeRetried, parseRetryBlock } from '@/utils/inputs'
+import { PopupBlockedToast } from '../PopupBlockedToast'
+import { LogicBlockType } from '@typebot.io/schemas/features/blocks/logic/constants'
+import { getBlockById } from '@typebot.io/schemas/helpers'
 
 type ChatGroupProps = {
-  blocks: Block[];
-  startBlockIndex: number;
-  groupTitle: string;
-  keepShowingHostAvatar: boolean;
+  blocks: Block[]
+  startBlockIndex: number
+  groupTitle: string
+  keepShowingHostAvatar: boolean
   onGroupEnd: ({
     edgeId,
     updatedTypebot,
   }: {
-    edgeId?: string;
-    updatedTypebot?: PublicTypebot | LinkedTypebot;
-  }) => void;
-};
+    edgeId?: string
+    updatedTypebot?: PublicTypebot | LinkedTypebot
+  }) => void
+}
 
-type ChatDisplayChunk = { bubbles: BubbleBlock[]; input?: InputBlock };
+type ChatDisplayChunk = { bubbles: BubbleBlock[]; input?: InputBlock }
 
 export const ChatGroup = ({
   blocks,
@@ -69,28 +68,26 @@ export const ChatGroup = ({
     setCurrentTypebotId,
     pushEdgeIdInLinkedTypebotQueue,
     pushParentTypebotId,
-  } = useTypebot();
-  const { resultValues, updateVariables, resultId } = useAnswers();
-  const { scroll } = useChat();
-  const [processedBlocks, setProcessedBlocks] = useState<Block[]>([]);
-  const [displayedChunks, setDisplayedChunks] = useState<ChatDisplayChunk[]>(
-    [],
-  );
-  const [blockedPopupUrl, setBlockedPopupUrl] = useState<string>();
+  } = useTypebot()
+  const { resultValues, updateVariables, resultId } = useAnswers()
+  const { scroll } = useChat()
+  const [processedBlocks, setProcessedBlocks] = useState<Block[]>([])
+  const [displayedChunks, setDisplayedChunks] = useState<ChatDisplayChunk[]>([])
+  const [blockedPopupUrl, setBlockedPopupUrl] = useState<string>()
 
   const insertBlockInStack = (nextBlock: Block) => {
-    setProcessedBlocks([...processedBlocks, nextBlock]);
+    setProcessedBlocks([...processedBlocks, nextBlock])
     if (isBubbleBlock(nextBlock)) {
-      const lastBlockType = getLastChatBlockType(processedBlocks);
+      const lastBlockType = getLastChatBlockType(processedBlocks)
       lastBlockType && isBubbleBlockType(lastBlockType)
         ? setDisplayedChunks(
             displayedChunks.map((c, idx) =>
               idx === displayedChunks.length - 1
                 ? { bubbles: [...c.bubbles, nextBlock] }
-                : c,
-            ),
+                : c
+            )
           )
-        : setDisplayedChunks([...displayedChunks, { bubbles: [nextBlock] }]);
+        : setDisplayedChunks([...displayedChunks, { bubbles: [nextBlock] }])
     }
     if (isInputBlock(nextBlock)) {
       displayedChunks.length === 0 ||
@@ -103,27 +100,27 @@ export const ChatGroup = ({
             displayedChunks.map((c, idx) =>
               idx === displayedChunks.length - 1
                 ? { ...c, input: nextBlock }
-                : c,
-            ),
-          );
+                : c
+            )
+          )
     }
-  };
+  }
 
   useEffect(() => {
-    const nextBlock = blocks[startBlockIndex];
-    if (nextBlock) insertBlockInStack(nextBlock);
+    const nextBlock = blocks[startBlockIndex]
+    if (nextBlock) insertBlockInStack(nextBlock)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [])
 
   useEffect(() => {
-    scroll();
-    onNewBlockDisplayed();
+    scroll()
+    onNewBlockDisplayed()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [processedBlocks]);
+  }, [processedBlocks])
 
   const onNewBlockDisplayed = async () => {
-    const currentBlock = [...processedBlocks].pop();
-    if (!currentBlock) return;
+    const currentBlock = [...processedBlocks].pop()
+    if (!currentBlock) return
     if (isLogicBlock(currentBlock)) {
       const { nextEdgeId, linkedTypebot, blockedPopupUrl } = await executeLogic(
         currentBlock,
@@ -141,19 +138,19 @@ export const ChatGroup = ({
           pushEdgeIdInLinkedTypebotQueue,
           currentTypebotId,
           pushParentTypebotId,
-        },
-      );
-      if (blockedPopupUrl) setBlockedPopupUrl(blockedPopupUrl);
+        }
+      )
+      if (blockedPopupUrl) setBlockedPopupUrl(blockedPopupUrl)
       const isRedirecting =
         currentBlock.type === LogicBlockType.REDIRECT &&
-        currentBlock.options?.isNewTab === false;
-      if (isRedirecting) return;
+        currentBlock.options?.isNewTab === false
+      if (isRedirecting) return
       nextEdgeId
         ? onGroupEnd({ edgeId: nextEdgeId, updatedTypebot: linkedTypebot })
-        : displayNextBlock();
+        : displayNextBlock()
     }
     if (isIntegrationBlock(currentBlock)) {
-      const { group } = getBlockById(currentBlock.id, typebot.groups);
+      const { group } = getBlockById(currentBlock.id, typebot.groups)
       const nextEdgeId = await executeIntegration({
         block: currentBlock,
         context: {
@@ -171,30 +168,25 @@ export const ChatGroup = ({
           resultId,
           parentTypebotIds,
         },
-      });
-      nextEdgeId ? onGroupEnd({ edgeId: nextEdgeId }) : displayNextBlock();
+      })
+      nextEdgeId ? onGroupEnd({ edgeId: nextEdgeId }) : displayNextBlock()
     }
-    if (currentBlock.type === "start")
-      onGroupEnd({ edgeId: currentBlock.outgoingEdgeId });
-  };
+    if (currentBlock.type === 'start')
+      onGroupEnd({ edgeId: currentBlock.outgoingEdgeId })
+  }
 
   const displayNextBlock = (
     answerContent?: InputSubmitContent,
-    isRetry?: boolean,
+    isRetry?: boolean
   ) => {
-    scroll();
-    const currentBlock = [...processedBlocks].pop();
+    scroll()
+    const currentBlock = [...processedBlocks].pop()
     if (currentBlock) {
       if (isRetry && blockCanBeRetried(currentBlock)) {
-        const { group } = getBlockById(currentBlock.id, typebot.groups);
+        const { group } = getBlockById(currentBlock.id, typebot.groups)
         return insertBlockInStack(
-          parseRetryBlock(
-            currentBlock,
-            group.id,
-            typebot.variables,
-            createEdge,
-          ),
-        );
+          parseRetryBlock(currentBlock, group.id, typebot.variables, createEdge)
+        )
       }
       if (
         isInputBlock(currentBlock) &&
@@ -203,29 +195,29 @@ export const ChatGroup = ({
       ) {
         updateVariableValue(
           currentBlock.options.variableId,
-          answerContent.value,
-        );
+          answerContent.value
+        )
       }
       const isSingleChoiceBlock =
-        isChoiceInput(currentBlock) && !currentBlock.options?.isMultipleChoice;
+        isChoiceInput(currentBlock) && !currentBlock.options?.isMultipleChoice
       if (isSingleChoiceBlock) {
         const nextEdgeId = currentBlock.items.find(
-          byId(answerContent?.itemId),
-        )?.outgoingEdgeId;
-        if (nextEdgeId) return onGroupEnd({ edgeId: nextEdgeId });
+          byId(answerContent?.itemId)
+        )?.outgoingEdgeId
+        if (nextEdgeId) return onGroupEnd({ edgeId: nextEdgeId })
       }
 
       if (
         currentBlock?.outgoingEdgeId ||
         processedBlocks.length === blocks.length
       )
-        return onGroupEnd({ edgeId: currentBlock.outgoingEdgeId });
+        return onGroupEnd({ edgeId: currentBlock.outgoingEdgeId })
     }
-    const nextBlock = blocks[processedBlocks.length + startBlockIndex];
-    nextBlock ? insertBlockInStack(nextBlock) : onGroupEnd({});
-  };
+    const nextBlock = blocks[processedBlocks.length + startBlockIndex]
+    nextBlock ? insertBlockInStack(nextBlock) : onGroupEnd({})
+  }
 
-  const avatarSrc = typebot.theme.chat?.hostAvatar?.url;
+  const avatarSrc = typebot.theme.chat?.hostAvatar?.url
 
   return (
     <div className="flex w-full" data-group-name={groupTitle}>
@@ -247,21 +239,21 @@ export const ChatGroup = ({
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
 type Props = {
-  displayChunk: ChatDisplayChunk;
-  hostAvatar: { isEnabled: boolean; src?: string };
-  hasGuestAvatar: boolean;
-  keepShowingHostAvatar: boolean;
-  blockedPopupUrl?: string;
-  onBlockedPopupLinkClick: () => void;
+  displayChunk: ChatDisplayChunk
+  hostAvatar: { isEnabled: boolean; src?: string }
+  hasGuestAvatar: boolean
+  keepShowingHostAvatar: boolean
+  blockedPopupUrl?: string
+  onBlockedPopupLinkClick: () => void
   onDisplayNextBlock: (
     answerContent?: InputSubmitContent,
-    isRetry?: boolean,
-  ) => void;
-};
+    isRetry?: boolean
+  ) => void
+}
 const ChatChunks = ({
   displayChunk: { bubbles, input },
   hostAvatar,
@@ -271,21 +263,21 @@ const ChatChunks = ({
   onBlockedPopupLinkClick,
   onDisplayNextBlock,
 }: Props) => {
-  const [isSkipped, setIsSkipped] = useState(false);
+  const [isSkipped, setIsSkipped] = useState(false)
 
-  const avatarSideContainerRef = useRef<{ refreshTopOffset: () => void }>();
+  const avatarSideContainerRef = useRef<{ refreshTopOffset: () => void }>()
 
   useEffect(() => {
-    refreshTopOffset();
-  });
+    refreshTopOffset()
+  })
 
   const skipInput = () => {
-    onDisplayNextBlock();
-    setIsSkipped(true);
-  };
+    onDisplayNextBlock()
+    setIsSkipped(true)
+  }
 
   const refreshTopOffset = () =>
-    avatarSideContainerRef.current?.refreshTopOffset();
+    avatarSideContainerRef.current?.refreshTopOffset()
 
   return (
     <>
@@ -301,7 +293,7 @@ const ChatChunks = ({
         )}
         <div
           className="flex-1"
-          style={{ marginRight: hasGuestAvatar ? "50px" : "0.5rem" }}
+          style={{ marginRight: hasGuestAvatar ? '50px' : '0.5rem' }}
         >
           <TransitionGroup>
             {bubbles.map((block) => (
@@ -314,8 +306,8 @@ const ChatChunks = ({
                 <HostBubble
                   block={block}
                   onTransitionEnd={() => {
-                    onDisplayNextBlock();
-                    refreshTopOffset();
+                    onDisplayNextBlock()
+                    refreshTopOffset()
                   }}
                 />
               </CSSTransition>
@@ -352,5 +344,5 @@ const ChatChunks = ({
         </div>
       ) : null}
     </>
-  );
-};
+  )
+}

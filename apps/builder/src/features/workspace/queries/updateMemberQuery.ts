@@ -1,12 +1,12 @@
-import { sendRequest } from "@typebot.io/lib/utils";
-import type { Prisma } from "@typebot.io/prisma/types";
+import { MemberInWorkspace } from '@typebot.io/prisma'
+import { sendRequest } from '@typebot.io/lib'
 
 export const updateMemberQuery = (
   workspaceId: string,
-  member: Partial<Prisma.MemberInWorkspace>,
+  member: Partial<MemberInWorkspace>
 ) =>
   sendRequest({
-    method: "PATCH",
+    method: 'PATCH',
     url: `/api/workspaces/${workspaceId}/members/${member.userId}`,
     body: member,
-  });
+  })

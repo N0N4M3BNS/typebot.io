@@ -1,8 +1,8 @@
-import { resolve } from "path";
-import { defineConfig, devices } from "@playwright/test";
+import { defineConfig, devices } from '@playwright/test'
+import { resolve } from 'path'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-require("dotenv").config({ path: resolve(__dirname, "../../.env") });
+require('dotenv').config({ path: resolve(__dirname, '../../.env') })
 
 export default defineConfig({
   timeout: process.env.CI ? 50 * 1000 : 40 * 1000,
@@ -13,33 +13,33 @@ export default defineConfig({
   workers: process.env.CI ? 1 : 4,
   retries: process.env.CI ? 2 : 1,
   reporter: [
-    [process.env.CI ? "github" : "list"],
-    ["html", { outputFolder: "src/test/reporters" }],
+    [process.env.CI ? 'github' : 'list'],
+    ['html', { outputFolder: 'src/test/reporters' }],
   ],
   maxFailures: 10,
   webServer: process.env.CI
     ? {
-        command: "bun run start",
+        command: 'pnpm run start',
         timeout: 60_000,
         reuseExistingServer: true,
         port: 3001,
       }
     : undefined,
-  outputDir: "./src/test/results",
+  outputDir: './src/test/results',
   use: {
-    trace: "on-first-retry",
-    locale: "en-US",
-    baseURL: process.env.NEXT_PUBLIC_VIEWER_URL?.split(",")[0],
+    trace: 'on-first-retry',
+    locale: 'en-US',
+    baseURL: process.env.NEXT_PUBLIC_VIEWER_URL?.split(',')[0],
   },
   projects: [
     {
-      name: "setup db",
+      name: 'setup db',
       testMatch: /global\.setup\.ts/,
     },
     {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
-      dependencies: ["setup db"],
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'] },
+      dependencies: ['setup db'],
     },
   ],
-});
+})

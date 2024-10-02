@@ -1,9 +1,9 @@
-import type { Prisma } from "@typebot.io/prisma/types";
+import { CollaboratorsOnTypebots } from '@typebot.io/prisma'
 
-export type Collaborator = Prisma.CollaboratorsOnTypebots & {
+export type Collaborator = CollaboratorsOnTypebots & {
   user: {
-    name: string | null;
-    image: string | null;
-    email: string | null;
-  };
-};
+    name: string | null
+    image: string | null
+    email: string | null
+  }
+}

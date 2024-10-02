@@ -1,14 +1,14 @@
-import { sendRequest } from "@typebot.io/lib/utils";
-import type { Prisma } from "@typebot.io/prisma/types";
+import { ApiToken } from '@typebot.io/prisma'
+import { sendRequest } from '@typebot.io/lib'
 
 export const deleteApiTokenQuery = ({
   userId,
   tokenId,
 }: {
-  userId: string;
-  tokenId: string;
+  userId: string
+  tokenId: string
 }) =>
-  sendRequest<{ apiToken: Prisma.ApiToken }>({
+  sendRequest<{ apiToken: ApiToken }>({
     url: `/api/users/${userId}/api-tokens/${tokenId}`,
-    method: "DELETE",
-  });
+    method: 'DELETE',
+  })

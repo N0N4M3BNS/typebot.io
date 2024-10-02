@@ -1,15 +1,13 @@
 {
   "name": "@typebot.io/forge",
   "version": "1.0.0",
-  "type": "module",
-  "private": true,
-  "exports": {
-    ".": "./src/index.ts",
-    "./*": "./src/*.ts"
-  },
+  "description": "",
+  "main": "index.ts",
+  "keywords": [],
+  "author": "Baptiste Arnaud",
+  "license": "AGPL-3.0-or-later",
   "dependencies": {
-    "@typebot.io/zod": "workspace:*",
-    "@typebot.io/variables": "workspace:*"
+    "zod": "3.22.4"
   },
   "devDependencies": {
     "@typebot.io/tsconfig": "workspace:*",

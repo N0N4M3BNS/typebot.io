@@ -1,14 +1,14 @@
-import { headerHeight } from "@/features/editor/constants";
-import { Box } from "@chakra-ui/react";
-import type { Coordinates } from "../types";
+import { Box } from '@chakra-ui/react'
+import { Coordinates } from '../types'
+import { headerHeight } from '@/features/editor/constants'
 
 type Props = {
-  origin: Coordinates;
+  origin: Coordinates
   dimension: {
-    width: number;
-    height: number;
-  };
-};
+    width: number
+    height: number
+  }
+}
 
 export const SelectBox = ({ origin, dimension }: Props) => (
   <Box
@@ -25,4 +25,4 @@ export const SelectBox = ({ origin, dimension }: Props) => (
       zIndex: 1000,
     }}
   />
-);
+)

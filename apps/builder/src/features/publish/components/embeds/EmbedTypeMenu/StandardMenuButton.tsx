@@ -1,14 +1,8 @@
-import { MotionStack } from "@/components/MotionStack";
-import {
-  Button,
-  type ButtonProps,
-  Stack,
-  type StackProps,
-  Text,
-} from "@chakra-ui/react";
-import { StandardIllustration } from "./illustrations/StandardIllustration";
+import { MotionStack } from '@/components/MotionStack'
+import { Stack, Button, StackProps, Text, ButtonProps } from '@chakra-ui/react'
+import { StandardIllustration } from './illustrations/StandardIllustration'
 
-type Props = StackProps & Pick<ButtonProps, "isDisabled">;
+type Props = StackProps & Pick<ButtonProps, 'isDisabled'>
 
 export const StandardMenuButton = (props: Props) => {
   return (
@@ -18,7 +12,7 @@ export const StandardMenuButton = (props: Props) => {
       alignItems="center"
       variant="outline"
       colorScheme="gray"
-      whiteSpace={"normal"}
+      whiteSpace={'normal'}
       spacing="6"
       height="250px"
       flex="1"
@@ -35,5 +29,5 @@ export const StandardMenuButton = (props: Props) => {
         <Text textColor="gray.500">Embed in a container on your site</Text>
       </Stack>
     </MotionStack>
-  );
-};
+  )
+}

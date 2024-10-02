@@ -1,12 +1,11 @@
-import { sendRequest } from "@typebot.io/lib/utils";
-import type { Prisma } from "@typebot.io/prisma/types";
-import type { AnswerInput } from "@typebot.io/results/schemas/answers";
+import { Answer, AnswerInput } from '@typebot.io/schemas'
+import { sendRequest } from '@typebot.io/lib'
 
 export const upsertAnswerQuery = async (
-  answer: AnswerInput & { resultId: string } & { uploadedFiles?: boolean },
+  answer: AnswerInput & { resultId: string } & { uploadedFiles?: boolean }
 ) =>
-  sendRequest<Prisma.Answer>({
+  sendRequest<Answer>({
     url: `/api/typebots/t/results/r/answers`,
-    method: "PUT",
+    method: 'PUT',
     body: answer,
-  });
+  })

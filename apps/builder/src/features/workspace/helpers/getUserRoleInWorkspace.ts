@@ -1,6 +1,6 @@
-import type { Prisma } from "@typebot.io/prisma/types";
+import { MemberInWorkspace } from '@typebot.io/prisma'
 
 export const getUserRoleInWorkspace = (
   userId: string,
-  workspaceMembers: Prisma.MemberInWorkspace[] | undefined,
-) => workspaceMembers?.find((member) => member.userId === userId)?.role;
+  workspaceMembers: MemberInWorkspace[] | undefined
+) => workspaceMembers?.find((member) => member.userId === userId)?.role

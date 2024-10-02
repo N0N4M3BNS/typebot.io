@@ -1,10 +1,10 @@
-import type { Coordinates } from "../types";
+import { Coordinates } from '../types'
 
 type Props = {
-  sourcePosition: Coordinates;
-  sourceTop: number;
-  elementWidth: number;
-};
+  sourcePosition: Coordinates
+  sourceTop: number
+  elementWidth: number
+}
 
 export const computeSourceCoordinates = ({
   sourcePosition,
@@ -13,4 +13,4 @@ export const computeSourceCoordinates = ({
 }: Props) => ({
   x: sourcePosition.x + elementWidth,
   y: sourceTop,
-});
+})

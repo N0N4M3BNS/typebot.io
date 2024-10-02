@@ -1,11 +1,11 @@
-import { sendRequest } from "@typebot.io/lib/utils";
-import type { Prisma } from "@typebot.io/prisma/types";
+import { WorkspaceInvitation } from '@typebot.io/prisma'
+import { sendRequest } from '@typebot.io/lib'
 
 export const updateInvitationQuery = (
-  invitation: Partial<Prisma.WorkspaceInvitation>,
+  invitation: Partial<WorkspaceInvitation>
 ) =>
   sendRequest({
     url: `/api/workspaces/${invitation.workspaceId}/invitations/${invitation.id}`,
-    method: "PATCH",
+    method: 'PATCH',
     body: invitation,
-  });
+  })

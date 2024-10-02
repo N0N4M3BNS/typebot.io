@@ -1,68 +1,67 @@
-import { ConfirmModal } from "@/components/ConfirmModal";
-import { TimeSince } from "@/components/TimeSince";
-import { useToast } from "@/hooks/useToast";
 import {
-  Button,
-  Checkbox,
-  Flex,
-  Heading,
-  Skeleton,
-  Stack,
-  Table,
   TableContainer,
-  Tbody,
-  Td,
-  Text,
-  Th,
+  Table,
   Thead,
   Tr,
+  Th,
+  Tbody,
+  Td,
+  Button,
+  Text,
+  Heading,
+  Checkbox,
+  Skeleton,
+  Stack,
+  Flex,
   useDisclosure,
-} from "@chakra-ui/react";
-import { T, useTranslate } from "@tolgee/react";
-import { byId, isDefined } from "@typebot.io/lib/utils";
-import type { Prisma } from "@typebot.io/prisma/types";
-import React, { useState } from "react";
-import { useApiTokens } from "../hooks/useApiTokens";
-import { deleteApiTokenQuery } from "../queries/deleteApiTokenQuery";
-import type { ApiTokenFromServer } from "../types";
-import { CreateTokenModal } from "./CreateTokenModal";
+} from '@chakra-ui/react'
+import { ConfirmModal } from '@/components/ConfirmModal'
+import { useToast } from '@/hooks/useToast'
+import { User } from '@typebot.io/prisma'
+import React, { useState } from 'react'
+import { byId, isDefined } from '@typebot.io/lib'
+import { CreateTokenModal } from './CreateTokenModal'
+import { useApiTokens } from '../hooks/useApiTokens'
+import { ApiTokenFromServer } from '../types'
+import { deleteApiTokenQuery } from '../queries/deleteApiTokenQuery'
+import { T, useTranslate } from '@tolgee/react'
+import { TimeSince } from '@/components/TimeSince'
 
-type Props = { user: Prisma.User };
+type Props = { user: User }
 
 export const ApiTokensList = ({ user }: Props) => {
-  const { t } = useTranslate();
-  const { showToast } = useToast();
+  const { t } = useTranslate()
+  const { showToast } = useToast()
   const { apiTokens, isLoading, mutate } = useApiTokens({
     userId: user.id,
     onError: (e) =>
-      showToast({ title: "Failed to fetch tokens", description: e.message }),
-  });
+      showToast({ title: 'Failed to fetch tokens', description: e.message }),
+  })
   const {
     isOpen: isCreateOpen,
     onOpen: onCreateOpen,
     onClose: onCreateClose,
-  } = useDisclosure();
-  const [deletingId, setDeletingId] = useState<string>();
+  } = useDisclosure()
+  const [deletingId, setDeletingId] = useState<string>()
 
   const refreshListWithNewToken = (token: ApiTokenFromServer) => {
-    if (!apiTokens) return;
-    mutate({ apiTokens: [token, ...apiTokens] });
-  };
+    if (!apiTokens) return
+    mutate({ apiTokens: [token, ...apiTokens] })
+  }
 
   const deleteToken = async (tokenId?: string) => {
-    if (!apiTokens || !tokenId) return;
-    const { error } = await deleteApiTokenQuery({ userId: user.id, tokenId });
-    if (!error)
-      mutate({ apiTokens: apiTokens.filter((t) => t.id !== tokenId) });
-  };
+    if (!apiTokens || !tokenId) return
+    const { error } = await deleteApiTokenQuery({ userId: user.id, tokenId })
+    if (!error) mutate({ apiTokens: apiTokens.filter((t) => t.id !== tokenId) })
+  }
 
   return (
     <Stack spacing={4}>
-      <Heading fontSize="2xl">{t("account.apiTokens.heading")}</Heading>
-      <Text>{t("account.apiTokens.description")}</Text>
+      <Heading fontSize="2xl">{t('account.apiTokens.heading')}</Heading>
+      <Text>{t('account.apiTokens.description')}</Text>
       <Flex justifyContent="flex-end">
         <Button onClick={onCreateOpen}>
-          {t("account.apiTokens.createButton.label")}
+          {t('account.apiTokens.createButton.label')}
         </Button>
         <CreateTokenModal
           userId={user.id}
@@ -76,8 +75,8 @@ export const ApiTokensList = ({ user }: Props) => {
         <Table>
           <Thead>
             <Tr>
-              <Th>{t("account.apiTokens.table.nameHeader")}</Th>
-              <Th w="130px">{t("account.apiTokens.table.createdHeader")}</Th>
+              <Th>{t('account.apiTokens.table.nameHeader')}</Th>
+              <Th w="130px">{t('account.apiTokens.table.createdHeader')}</Th>
               <Th w="0" />
             </Tr>
           </Thead>
@@ -95,7 +94,7 @@ export const ApiTokensList = ({ user }: Props) => {
                     variant="outline"
                     onClick={() => setDeletingId(token.id)}
                   >
-                    {t("account.apiTokens.deleteButton.label")}
+                    {t('account.apiTokens.deleteButton.label')}
                   </Button>
                 </Td>
               </Tr>
@@ -133,8 +132,8 @@ export const ApiTokensList = ({ user }: Props) => {
             />
           </Text>
         }
-        confirmButtonLabel={t("account.apiTokens.deleteButton.label")}
+        confirmButtonLabel={t('account.apiTokens.deleteButton.label')}
       />
     </Stack>
-  );
-};
+  )
+}

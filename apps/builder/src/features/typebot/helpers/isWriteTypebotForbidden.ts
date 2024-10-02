@@ -1,15 +1,20 @@
-import { CollaborationType } from "@typebot.io/prisma/enum";
-import type { Prisma } from "@typebot.io/prisma/types";
+import {
+  CollaborationType,
+  CollaboratorsOnTypebots,
+  MemberInWorkspace,
+  User,
+  Workspace,
+} from '@typebot.io/prisma'
 
 export const isWriteTypebotForbidden = async (
   typebot: {
-    collaborators: Pick<Prisma.CollaboratorsOnTypebots, "userId" | "type">[];
+    collaborators: Pick<CollaboratorsOnTypebots, 'userId' | 'type'>[]
   } & {
-    workspace: Pick<Prisma.Workspace, "isSuspended" | "isPastDue"> & {
-      members: Pick<Prisma.MemberInWorkspace, "userId" | "role">[];
-    };
+    workspace: Pick<Workspace, 'isSuspended' | 'isPastDue'> & {
+      members: Pick<MemberInWorkspace, 'userId' | 'role'>[]
+    }
   },
-  user: Pick<Prisma.User, "id">,
+  user: Pick<User, 'id'>
 ) => {
   return (
     typebot.workspace.isSuspended ||
@@ -17,10 +22,10 @@ export const isWriteTypebotForbidden = async (
     (!typebot.collaborators.some(
       (collaborator) =>
         collaborator.userId === user.id &&
-        collaborator.type === CollaborationType.WRITE,
+        collaborator.type === CollaborationType.WRITE
     ) &&
       !typebot.workspace.members.some(
-        (m) => m.userId === user.id && m.role !== "GUEST",
+        (m) => m.userId === user.id && m.role !== 'GUEST'
       ))
-  );
-};
+  )
+}

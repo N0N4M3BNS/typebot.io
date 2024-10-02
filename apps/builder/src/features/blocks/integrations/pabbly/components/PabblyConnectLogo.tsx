@@ -1,4 +1,4 @@
-import { Icon, type IconProps } from "@chakra-ui/react";
+import { Icon, IconProps } from '@chakra-ui/react'
 
 export const PabblyConnectLogo = (props: IconProps) => (
   <Icon
@@ -24,4 +24,4 @@ export const PabblyConnectLogo = (props: IconProps) => (
       </g>
     </switch>
   </Icon>
-);
+)

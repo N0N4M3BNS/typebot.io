@@ -1,40 +1,40 @@
-import { createAction, option } from "@typebot.io/forge";
-import { baseOptions } from "../baseOptions";
-import { defaultBaseUrl } from "../constants";
+import { createAction, option } from '@typebot.io/forge'
+import { baseOptions } from '../baseOptions'
+import { defaultBaseUrl } from '../constants'
 
 export const bookEvent = createAction({
-  name: "Book event",
+  name: 'Book event',
   baseOptions,
   options: option.object({
     link: option.string.layout({
-      label: "Event link",
-      placeholder: "https://cal.com/...",
+      label: 'Event link',
+      placeholder: 'https://cal.com/...',
     }),
     layout: option
-      .enum(["Month", "Weekly", "Columns"])
-      .layout({ label: "Layout:", defaultValue: "Month", direction: "row" }),
+      .enum(['Month', 'Weekly', 'Columns'])
+      .layout({ label: 'Layout:', defaultValue: 'Month', direction: 'row' }),
     name: option.string.layout({
-      accordion: "Prefill information",
-      label: "Name",
-      placeholder: "John Doe",
+      accordion: 'Prefill information',
+      label: 'Name',
+      placeholder: 'John Doe',
     }),
     email: option.string.layout({
-      accordion: "Prefill information",
-      label: "Email",
-      placeholder: "johndoe@gmail.com",
+      accordion: 'Prefill information',
+      label: 'Email',
+      placeholder: 'johndoe@gmail.com',
     }),
     additionalNotes: option.string.layout({
-      accordion: "Prefill information",
-      label: "Additional notes",
+      accordion: 'Prefill information',
+      label: 'Additional notes',
     }),
     phone: option.string.layout({
-      accordion: "Prefill information",
-      label: "Phone number",
-      placeholder: "+919999999999",
+      accordion: 'Prefill information',
+      label: 'Phone number',
+      placeholder: '+919999999999',
     }),
     saveBookedDateInVariableId: option.string.layout({
-      label: "Save booked date",
-      inputType: "variableDropdown",
+      label: 'Save booked date',
+      inputType: 'variableDropdown',
     }),
   }),
   getSetVariableIds: ({ saveBookedDateInVariableId }) =>
@@ -63,19 +63,19 @@ export const bookEvent = createAction({
                   callback
                 })
               }`,
-            };
+            }
           },
         },
         parseInitFunction: ({ options }) => {
-          if (!options.link) throw new Error("Missing link");
-          const baseUrl = options.baseUrl ?? defaultBaseUrl;
-          const link = options.link?.startsWith("http")
-            ? options.link.replace(/http.+:\/\/[^\/]+\//, "")
-            : options.link;
+          if (!options.link) throw new Error('Missing link')
+          const baseUrl = options.baseUrl ?? defaultBaseUrl
+          const link = options.link?.startsWith('http')
+            ? options.link.replace(/http.+:\/\/[^\/]+\//, '')
+            : options.link
           return {
             args: {
               baseUrl,
-              link: link ?? "",
+              link: link ?? '',
               name: options.name ?? null,
               email: options.email ?? null,
               layout: parseLayoutAttr(options.layout),
@@ -133,22 +133,22 @@ export const bookEvent = createAction({
               });
 
               Cal("ui", {"hideEventTypeDetails":false,layout});`,
-          };
+          }
         },
       },
     },
   },
-});
+})
 
 const parseLayoutAttr = (
-  layout?: "Month" | "Weekly" | "Columns",
-): "month_view" | "week_view" | "column_view" => {
+  layout?: 'Month' | 'Weekly' | 'Columns'
+): 'month_view' | 'week_view' | 'column_view' => {
   switch (layout) {
-    case "Weekly":
-      return "week_view";
-    case "Columns":
-      return "column_view";
+    case 'Weekly':
+      return 'week_view'
+    case 'Columns':
+      return 'column_view'
     default:
-      return "month_view";
+      return 'month_view'
   }
-};
+}
